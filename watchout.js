@@ -1,6 +1,6 @@
 var gameOptions = {
-  height: 450,
-  width: 700,
+  height: 900,
+  width: 1800,
   nEnemies: 30,
   padding: 20
 };
@@ -46,7 +46,6 @@ var dragmove = function(d) {
       return (left > gameOptions.width) ? (gameOptions.width + "px") : leftStyle;
     });
 };
-
 // var drag = d3.behavior.drag()
 //   .on("drag", dragmove);
 
@@ -114,8 +113,33 @@ var updateBestScore = function() {
 var updateScore = function() {
   return d3.select('#current').text(gameStats.score.toString());
 };
-
+var m = 2;
 var increaseScore = function() {
+  var multiplier = Math.ceil(gameStats.score / 100);
+
+  if (multiplier === m) {
+    m++;
+    var text = "<span class = 'levelTwo'>LEVEL " + (m - 1) + "!!!</span>";
+    $(text).appendTo('.game-board');
+    $(".levelTwo").animate({
+      left: '-3150px',
+      //opacity:'0.5',
+      //height:'150px',
+      //width:'150px'
+    }, 4000);
+    $("<span class ='wish'>Make a wish!!!</span>").appendTo('.game-board');
+    $(".wish").animate({
+      left: '-3150px',
+      //opacity:'0.5',
+      //height:'150px',
+      //width:'150px'
+    }, 6000);
+
+    gameOptions.nEnemies *= multiplier;
+  }
+
+
+
   gameStats.score += 1;
   return updateScore();
 };
@@ -145,4 +169,4 @@ var tweenWithCollisionDetection = function(endData) {
 moveEnemies();
 setInterval(function() {
   moveEnemies();
-}, 2000);
+}, 2500);
