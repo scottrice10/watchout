@@ -35,8 +35,16 @@ var gameBoard = d3.select('body').append('div')
 
 var dragmove = function(d) {
   d3.select(this)
-    .style("top", ((d3.event.sourceEvent.pageY) - this.offsetHeight / 2) + "px")
-    .style("left", ((d3.event.sourceEvent.pageX) - this.offsetWidth / 2) + "px");
+    .style("top", function(){
+      var top = ((d3.event.sourceEvent.pageY) - this.offsetHeight / 2);
+      var topStyle = top + "px";
+      return (top > gameOptions.height) ? (gameOptions.height + "px") : topStyle;
+    })
+    .style("left", function(){
+      var left = ((d3.event.sourceEvent.pageX) - this.offsetWidth / 2);
+      var leftStyle = left + "px";
+      return (left > gameOptions.width) ? (gameOptions.width + "px") : leftStyle;
+    });
 };
 
 var drag = d3.behavior.drag()
