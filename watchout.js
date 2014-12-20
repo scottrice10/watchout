@@ -1,5 +1,3 @@
-// start slingin' some d3 here.
-//
 var gameOptions = {
   height: 450,
   width: 700,
@@ -9,7 +7,8 @@ var gameOptions = {
 
 var gameStats = {
   score: 0,
-  bestScore: 0
+  bestScore: 0,
+  collisions: 0
 };
 
 var createEnemies = function() {
@@ -23,12 +22,16 @@ var createEnemies = function() {
   });
 };
 
+var player = [];
 var gameBoard = d3.select('body').append('div')
   .attr('class', 'game-board')
   .style("height", gameOptions.height + "px")
   .style("background-color", "gray")
   .style({
     'width': gameOptions.width + 'px'
+  })
+  .on('mousemove', function() {
+    player = d3.mouse(this);
   });
 
 var moveEnemies = function() {
@@ -41,14 +44,11 @@ var moveEnemies = function() {
     .style("background-image", "url('asteroid.png')")
     .attr('class', 'enemy');
 
-  enemies.style('top', function(enemy){
-      return Math.random() * (gameOptions.height - 35) + 'px'
-    })
-    .style('left', function(enemy){
+  enemies.style('top', function() {
+    return Math.random() * (gameOptions.height - 35) + 'px'
+  })
+    .style('left', function() {
       return Math.random() * (gameOptions.width - 35) + 'px'
-    })
-    .on("mouseover", function() {
-      onCollision();
     })
     .transition().duration(500)
     .transition().duration(2000)
@@ -58,24 +58,23 @@ var moveEnemies = function() {
 };
 
 var checkCollision = function(enemy, collidedCallback) {
-  //   var radiusSum = parseFloat(enemy.style('width')) / 2;
-  //   // var xDiff = parseFloat(enemy.style('left')) - player[0];
-  //   // var yDiff = parseFloat(enemy.style('top')) - player[1];
-  //   var separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-  //   // console.log("xDiff:" + xDiff);
-  //   return function() {
-  //     if (separation < radiusSum) {
-  //       console.log(separation);
-  //       return collidedCallback();
-  //     }
-  //   };
+  var radiusSum = parseFloat(enemy.style('width'));
+  var xDiff = parseFloat(enemy.style('left')) - player[0];
+  var yDiff = parseFloat(enemy.style('top')) - player[1];
+  var separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+  if(separation < radiusSum) {
+    return collidedCallback();
+  }
 };
 
 var onCollision = function() {
+  d3.select('.game-board').style('background-image', 'none');
   d3.select('.game-board').style('background-color', 'red');
+  updateCollisionCount();
 
   setTimeout(function() {
-    d3.select('.game-board').style('background-color', 'gray');
+    d3.select('.game-board').style('background-image', 'url("stars.jpg")');
   }, 500);
 
   updateBestScore();
@@ -90,6 +89,11 @@ var updateBestScore = function() {
 
 var updateScore = function() {
   return d3.select('#current').text(gameStats.score.toString());
+};
+
+var updateCollisionCount = function() {
+  gameStats.collisions++;
+  return d3.select('#collisions').text(gameStats.collisions.toString());
 };
 
 var increaseScore = function() {
@@ -108,6 +112,7 @@ var tweenWithCollisionDetection = function(endData) {
     left: Math.random() * (gameOptions.width - 35),
     top: Math.random() * (gameOptions.height - 35)
   };
+
   return function(t) {
     checkCollision(enemy, onCollision);
     var enemyNextPos = {
@@ -118,6 +123,7 @@ var tweenWithCollisionDetection = function(endData) {
   };
 };
 
+moveEnemies();
 setInterval(function() {
   moveEnemies();
 }, 2000);
