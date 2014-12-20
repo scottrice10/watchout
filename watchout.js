@@ -25,41 +25,36 @@ for (var i = 0; i < gameOptions.nEnemies; i++) {
 
 var moveEnemies = function() {
   d3.selectAll('.enemy')
+    .on("mouseover", function() {
+      onCollision();
+    })
+    .on("mouseenter", function() {
+      onCollision();
+    })
+    .on("mousemove", function() {
+      onCollision();
+    })
     .transition().duration(500)
     .transition().duration(2000)
     .tween('custom', tweenWithCollisionDetection);
 }
 
-var player = [];
-d3.select('body')
-  .on("mouseover", function() {
-    player = d3.mouse(this);
-    console.log("mouse: " + player);
-    var enemies = d3.selectAll('enemy')[0];
-
-    setInterval(function() {
-      for (var i = 0; i < enemies.length; i++) {
-        checkCollision(enemies[i], player, onCollision);
-      }
-    });
-
-  });
-
-
-
-var checkCollision = function(enemy, player, collidedCallback) {
-  var radiusSum = parseFloat(enemy.style('width')) / 2;
-  var xDiff = parseFloat(enemy.style('left')) - player[0];
-  var yDiff = parseFloat(enemy.style('top')) - player[1];
-  var separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-  return function() {
-    if (separation < radiusSum) {
-      return collidedCallback();
-    }
-  };
+var checkCollision = function(enemy, collidedCallback) {
+  //   var radiusSum = parseFloat(enemy.style('width')) / 2;
+  //   // var xDiff = parseFloat(enemy.style('left')) - player[0];
+  //   // var yDiff = parseFloat(enemy.style('top')) - player[1];
+  //   var separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+  //   // console.log("xDiff:" + xDiff);
+  //   return function() {
+  //     if (separation < radiusSum) {
+  //       console.log(separation);
+  //       return collidedCallback();
+  //     }
+  //   };
 };
 
 var onCollision = function() {
+  console.log("collided");
   // updateBestScore();
   // gameStats.score = 0;
   // return updateScore();
