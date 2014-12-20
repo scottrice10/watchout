@@ -7,8 +7,7 @@ var gameOptions = {
 
 var gameStats = {
   score: 0,
-  bestScore: 0,
-  collisions: 0
+  bestScore: 0
 };
 
 var createEnemies = function() {
@@ -34,6 +33,21 @@ var gameBoard = d3.select('body').append('div')
     player = d3.mouse(this);
   });
 
+var dragmove = function(d) {
+  d3.select(this)
+    .style("top", ((d3.event.sourceEvent.pageY) - this.offsetHeight / 2) + "px")
+    .style("left", ((d3.event.sourceEvent.pageX) - this.offsetWidth / 2) + "px");
+};
+
+var drag = d3.behavior.drag()
+  .on("drag", dragmove);
+
+var player = gameBoard.append('button')
+  .attr('class', 'player')
+  .style('top', (gameOptions.height / 2) + 'px')
+  .style('left', (gameOptions.width / 2) + 'px')
+  .call(drag);
+
 var moveEnemies = function() {
   var empty = createEnemies();
   var enemies = gameBoard.selectAll('div').data(empty, function(d) {
@@ -58,7 +72,7 @@ var moveEnemies = function() {
 };
 
 var checkCollision = function(enemy, collidedCallback) {
-  var radiusSum = parseFloat(enemy.style('width'));
+  var radiusSum = parseFloat(enemy.style('width')) / 2;
   var xDiff = parseFloat(enemy.style('left')) - player[0];
   var yDiff = parseFloat(enemy.style('top')) - player[1];
   var separation = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
@@ -71,7 +85,6 @@ var checkCollision = function(enemy, collidedCallback) {
 var onCollision = function() {
   d3.select('.game-board').style('background-image', 'none');
   d3.select('.game-board').style('background-color', 'red');
-  updateCollisionCount();
 
   setTimeout(function() {
     d3.select('.game-board').style('background-image', 'url("stars.jpg")');
@@ -89,11 +102,6 @@ var updateBestScore = function() {
 
 var updateScore = function() {
   return d3.select('#current').text(gameStats.score.toString());
-};
-
-var updateCollisionCount = function() {
-  gameStats.collisions++;
-  return d3.select('#collisions').text(gameStats.collisions.toString());
 };
 
 var increaseScore = function() {
