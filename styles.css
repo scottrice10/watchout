@@ -47,3 +47,12 @@ body {
   left:4000px;
   width:3000px;
 }
+
+.shooting-star{
+  position:absolute;
+  left:100px;
+  top:500px;
+  height:30px;
+  color:white;
+  width:30px;
+}

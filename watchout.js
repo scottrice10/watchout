@@ -77,6 +77,7 @@ var moveEnemies = function(element) {
     .style('left', function() {
       return Math.random() * (gameOptions.width - 35) + 'px'
     })
+    .style('transform', 'rotate(180deg)')
     .each('end', function() {
       moveEnemies(d3.select(this));
     });
@@ -139,6 +140,16 @@ var increaseScore = function() {
       //height:'150px',
       //width:'150px'
     }, 4000);
+
+    setTimeout(function() {
+      $('<svg class="shooting-star"><circle cx="25" cy="25" r="40" fill="white"></svg>').appendTo('.game-board');
+      $('.shooting-star').animate({
+        left: '4000px',
+        top: '0px',
+
+      }, 800);
+    }, 2000);
+
     $("<span class ='wish'>Make a wish!!!</span>").appendTo('.game-board');
     $(".wish").animate({
       left: '-3150px',
@@ -148,6 +159,11 @@ var increaseScore = function() {
     }, 6000);
 
     gameOptions.nEnemies *= multiplier;
+
+    gameBoard.select('span').data(d3.range(1))
+      .enter().append('span')
+      .attr('class', 'shooting-star')
+      .transition().duration(500)
   }
 
   gameStats.score += 1;
