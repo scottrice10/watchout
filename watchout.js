@@ -34,28 +34,6 @@ var gameBoard = d3.select('body').append('div')
     player = d3.mouse(this);
   });
 
-// var dragmove = function(d) {
-//   d3.select(this)
-//     .style("top", function() {
-//       var top = ((d3.event.sourceEvent.pageY) - this.offsetHeight / 2);
-//       var topStyle = top + "px";
-//       return (top > gameOptions.height) ? (gameOptions.height + "px") : topStyle;
-//     })
-//     .style("left", function() {
-//       var left = ((d3.event.sourceEvent.pageX) - this.offsetWidth / 2);
-//       var leftStyle = left + "px";
-//       return (left > gameOptions.width) ? (gameOptions.width + "px") : leftStyle;
-//     });
-// };
-// var drag = d3.behavior.drag()
-//   .on("drag", dragmove);
-
-// var player = gameBoard.append('button')
-//   .attr('class', 'player')
-//   .style('top', (gameOptions.height / 2) + 'px')
-//   .style('left', (gameOptions.width / 2) + 'px')
-//   .call(drag);
-
 var enemies = gameBoard.selectAll('div').data(d3.range(gameOptions.nEnemies))
   .enter().append("div")
   .style("background-image", "url('asteroid.png')")
@@ -135,35 +113,23 @@ var increaseScore = function() {
     var text = "<span class = 'levelTwo'>LEVEL " + (m - 1) + "!!!</span>";
     $(text).appendTo('.game-board');
     $(".levelTwo").animate({
-      left: '-3150px',
-      //opacity:'0.5',
-      //height:'150px',
-      //width:'150px'
+      left: '-3150px'
     }, 4000);
 
     setTimeout(function() {
       $('<svg class="shooting-star"><circle cx="25" cy="25" r="40" fill="white"></svg>').appendTo('.game-board');
       $('.shooting-star').animate({
         left: '4000px',
-        top: '0px',
-
+        top: '0px'
       }, 800);
     }, 2000);
 
     $("<span class ='wish'>Make a wish!!!</span>").appendTo('.game-board');
     $(".wish").animate({
-      left: '-3150px',
-      //opacity:'0.5',
-      //height:'150px',
-      //width:'150px'
+      left: '-3150px'
     }, 6000);
 
     gameOptions.nEnemies *= multiplier;
-
-    gameBoard.select('span').data(d3.range(1))
-      .enter().append('span')
-      .attr('class', 'shooting-star')
-      .transition().duration(500)
   }
 
   gameStats.score += 1;
